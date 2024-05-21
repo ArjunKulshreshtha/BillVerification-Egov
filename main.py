@@ -1,32 +1,40 @@
-from openai import OpenAI
+import pathlib
+import textwrap
 
-client = OpenAI(api_key='sk-proj-XC0h775mWvBgQ5gVxPUkT3BlbkFJhFAUtP6JiUFaTplHo68s')
-import base64
+import google.generativeai as genai
 
-# Set up your OpenAI API key
+from IPython.display import display
+from IPython.display import Markdown
 
-# Function to send image and text prompt to GPT-4o
-def generate_text_from_image(text_prompt):
-    # Generate text from image and prompt using GPT-4o
-    with open('testing.jpg', 'rb') as image_file:
-        image_data = image_file.read()
+def to_markdown(text):
+  text = text.replace('•', '  *')
+  return Markdown(textwrap.indent(text, '> ', predicate=lambda _: True))
 
-    image_base64 = base64.b64encode(image_data).decode('utf-8')
 
-    response = client.completions.create(model='gpt-4o',
-    prompt=f"Image: {image_base64}\nText prompt: {text_prompt}",
-    max_tokens=100,
-    temperature=0.7,
-    n=1,
-    stop=None)
+genai.configure(api_key="AIzaSyAFTkGfybl1srXjb6Z-qZWsnDT1ADdL83E")
 
-    # Extract the generated text from the response
-    generated_text = response.choices[0].text.strip()
 
-    return generated_text
+for m in genai.list_models():
+  if 'generateContent' in m.supported_generation_methods:
+    print(m.name)
 
-# Example usage
-text_prompt = 'Extract text from this image'
 
-generated_text = generate_text_from_image(text_prompt)
-print(generated_text)
+import PIL.Image
+
+img = PIL.Image.open('testing.jpg')
+
+model = genai.GenerativeModel('gemini-pro-vision')
+
+response = model.generate_content(img)
+
+to_markdown(response.text)
+
+
+response = model.generate_content(["Convert all text in this image to JSON format", img], stream=True)
+response.resolve()
+
+print(response.text)
+
+
+
+
