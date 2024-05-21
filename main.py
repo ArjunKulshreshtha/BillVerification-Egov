@@ -5,7 +5,7 @@ import fitz
 
 import constants
 
-img_path = 'imgs/pdfTeamAbout.pdf'
+img_path = 'imgs/longtest.pdf'
 
 is_pdf = False
 
@@ -34,18 +34,34 @@ genai.configure(api_key=os.environ.get('GOOGLE_API_CREDENTIALS'))
 
 if (is_pdf == False):
     img = PIL.Image.open(img_path)
+
+    model = genai.GenerativeModel('gemini-pro-vision')
+
+    response = model.generate_content(img)
+
+    response = model.generate_content(["Convert all text in this image to JSON format. Do not use the rupee symbol. Do nothing except the text extraction.", img], stream=True)
+
+    # response = model.generate_content(["Extract and translate to English", img], stream=True)
+
+
+    response.resolve()
+
+    print(response.text)
 else:
     img = PIL.Image.open("pdfpics/page_1.png")
 
-model = genai.GenerativeModel('gemini-pro-vision')
+    for i in range(1, len(os.listdir("pdfpics"))):
+        img = PIL.Image.open(f"pdfpics/page_{i}.png")
 
-response = model.generate_content(img)
+        model = genai.GenerativeModel('gemini-pro-vision')
 
-response = model.generate_content(["Convert all text in this image to JSON format. Do not use the rupee symbol. Do nothing except the text extraction.", img], stream=True)
+        response = model.generate_content(img)
 
-# response = model.generate_content(["Extract and translate to English", img], stream=True)
+        response = model.generate_content(["Convert all text in this image to JSON format. Do not use the rupee symbol. Do nothing except the text extraction.", img], stream=True)
+
+        # response = model.generate_content(["Extract and translate to English", img], stream=True)
 
 
-response.resolve()
+        response.resolve()
 
-print(response)
+        print(response.text)
