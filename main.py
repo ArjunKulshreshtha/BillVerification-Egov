@@ -1,22 +1,30 @@
 import google.generativeai as genai
 import PIL.Image
 import os
+import fitz  
 
-img_path = 'imgs/PDFTest.pdf'
+import constants
+
+img_path = 'imgs/pdfTeamAbout.pdf'
+
+is_pdf = False
 
 if not os.path.exists(img_path):
     print("Please provide a valid image path")
     exit()
 
 if img_path.split('.')[-1] in ['pdf']:
-    print("That was a PDF")
-    exit()
+    is_pdf = True
+    doc = fitz.open(img_path)  # open document
+    for i, page in enumerate(doc):
+        pix = page.get_pixmap()  # render page to an image
+        pix.save(f"pdfpics/page_{i+1}.png")
 
 elif img_path.split('.')[-1] not in ['jpeg', 'jpg', 'png']:
     print("That wasnt an image")
     exit()
 
-os.environ["GOOGLE_API_CREDENTIALS"] = "AIzaSyAFTkGfybl1srXjb6Z-qZWsnDT1ADdL83E"
+os.environ["GOOGLE_API_CREDENTIALS"] = constants.api_key
 genai.configure(api_key=os.environ.get('GOOGLE_API_CREDENTIALS'))
 # for m in genai.list_models():
 #   if 'generateContent' in m.supported_generation_methods:
@@ -24,8 +32,10 @@ genai.configure(api_key=os.environ.get('GOOGLE_API_CREDENTIALS'))
 
 
 
-
-img = PIL.Image.open(img_path)
+if (is_pdf == False):
+    img = PIL.Image.open(img_path)
+else:
+    img = PIL.Image.open("pdfpics/page_1.png")
 
 model = genai.GenerativeModel('gemini-pro-vision')
 
