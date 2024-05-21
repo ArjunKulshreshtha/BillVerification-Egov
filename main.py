@@ -1,42 +1,32 @@
-import openai
-import os   
+from openai import OpenAI
 
-os.environ['OPENAI_API_KEY'] = "sk-proj-XC0h775mWvBgQ5gVxPUkT3BlbkFJhFAUtP6JiUFaTplHo68s" # Replace with your API Key
-openai.api_key = os.getenv("OPENAI_API_KEY")
+client = OpenAI(api_key='sk-proj-XC0h775mWvBgQ5gVxPUkT3BlbkFJhFAUtP6JiUFaTplHo68s')
+import base64
 
+# Set up your OpenAI API key
 
-def chatGPT_image(prompt, 
-            image_url,
-            model="gpt-4o",
-            detail = "low",
-            max_tokens=300):
-    error_message = ""
-    try:
-        messages = [{
-            'role': 'user', 'content': [
-            {"type": "text", "text": prompt},
-            {"type": "image_url",
-             "image_url": {"url" : image_url, "detail" : detail},
-             },
-            ],
-            }]
+# Function to send image and text prompt to GPT-4o
+def generate_text_from_image(text_prompt):
+    # Generate text from image and prompt using GPT-4o
+    with open('testing.jpg', 'rb') as image_file:
+        image_data = image_file.read()
 
-        response = openai.ChatCompletion.create(
-          model = model,
-          messages = messages,
-          max_tokens=max_tokens
-        )
-        
-    except Exception as e:
-        error_message = str(e)
+    image_base64 = base64.b64encode(image_data).decode('utf-8')
 
-    if error_message:
-        return "An error occurred: {}".format(error_message)
-    else:
-        return response['choices'][0]['message']['content']
+    response = client.completions.create(model='gpt-4o',
+    prompt=f"Image: {image_base64}\nText prompt: {text_prompt}",
+    max_tokens=100,
+    temperature=0.7,
+    n=1,
+    stop=None)
 
-# Run Function    
-response = chatGPT_image(prompt = "What's in the image?",
-              image_url = "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgCGchJj9jVRP0jMND1a6tJXj7RcYWtnCO4J6YcbPTXrNxiCvs_3NSk7h2gB0h2sc_6bTvwPrBeBHwUA45AXAhaw1uuINuPDcHCbARxpgJIXM5Spi_0P45aR6tqZ_yof-YlNn41LhzHjfW-wsV3mhxBug4To8xtgyMzsHLbm3XoaHZmYUdNY1YWJA5rh6cB/s1600/Soccer-1490541_960_720.jpg")
+    # Extract the generated text from the response
+    generated_text = response.choices[0].text.strip()
 
-print(response)
+    return generated_text
+
+# Example usage
+text_prompt = 'Extract text from this image'
+
+generated_text = generate_text_from_image(text_prompt)
+print(generated_text)
