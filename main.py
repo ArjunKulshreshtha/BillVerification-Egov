@@ -5,7 +5,7 @@ import fitz
 
 import constants
 
-img_path = 'imgs/elecbill.jpeg'
+img_path = 'imgs/handwriting.jpg'
 
 is_pdf = False
 
@@ -39,9 +39,9 @@ if (is_pdf == False):
 
     response = model.generate_content(img)
 
-    # response = model.generate_content(["Translate into English and convert all text in this image to JSON format. Do not use the rupee symbol. Do nothing except the translation and text extraction.", img], stream=True)
+    # response = model.generate_content(["Extract text", img], stream=True)
 
-    response = model.generate_content(["Extract and translate to English, present translated text in JSON format. Use only ASCII characters", img], stream=True)
+    response = model.generate_content(["Extract, present translated text in JSON format. Use only ASCII characters.", img], stream=True)
 
 
     response.resolve()
@@ -57,7 +57,7 @@ else:
 
         response = model.generate_content(img)
 
-        response = model.generate_content(["Extract and translate to English, present translated text in JSON format. Use only ASCII characters", img], stream=True)
+        response = model.generate_content(["Extract, present translated text in JSON format. Use only ASCII characters.", img], stream=True)
 
         # response = model.generate_content(["Extract and translate to English", img], stream=True)
 
