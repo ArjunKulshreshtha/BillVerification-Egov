@@ -5,7 +5,7 @@ import fitz
 
 import constants
 
-img_path = 'imgs/handwriting.jpg'
+img_path = 'imgs/elecbill.jpeg'
 
 is_pdf = False
 
@@ -24,7 +24,7 @@ elif img_path.split('.')[-1] not in ['jpeg', 'jpg', 'png']:
     print("That wasnt an image")
     exit()
 
-os.environ["GOOGLE_API_CREDENTIALS"] = constants.api_key
+os.environ["GOOGLE_API_CREDENTIALS"] = constants.gemini_api_key
 genai.configure(api_key=os.environ.get('GOOGLE_API_CREDENTIALS'))
 # for m in genai.list_models():
 #   if 'generateContent' in m.supported_generation_methods:
@@ -41,12 +41,12 @@ if (is_pdf == False):
 
     # response = model.generate_content(["Extract text", img], stream=True)
 
-    response = model.generate_content(["Extract, present translated text in JSON format. Use only ASCII characters.", img], stream=True)
+    response = model.generate_content(["Extract, present translated text in JSON format. Use only ASCII characters.", img])
 
 
     response.resolve()
 
-    print(response.text)
+    print(response)
 else:
     img = PIL.Image.open("pdfpics/page_1.png")
 
@@ -57,7 +57,7 @@ else:
 
         response = model.generate_content(img)
 
-        response = model.generate_content(["Extract, present translated text in JSON format. Use only ASCII characters.", img], stream=True)
+        response = model.generate_content(["Extract, present translated text in JSON format. Use only ASCII characters.", img])
 
         # response = model.generate_content(["Extract and translate to English", img], stream=True)
 
