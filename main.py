@@ -1,11 +1,9 @@
-import google.generativeai as genai
-import PIL.Image
 import os
-import fitz  
+import fitz
 
 
-img_path = 'imgs/elecbill.jpeg'
-text_prompt = 'Extract all text in this file and output it in JSON format. Convert any dates in the file to dd/mm/yyyy format before entering it into the JSON format. Use only ASCII characters. Translate all text to English before putting in JSON format.'
+img_path = "imgs/longtest.pdf"
+text_prompt = "Extract all text in this file and output it in JSON format. Convert any dates in the file to dd/mm/yyyy format before entering it into the JSON format. Use only ASCII characters. Translate all text to English before putting in JSON format."
 
 is_pdf = False
 
@@ -13,14 +11,14 @@ if not os.path.exists(img_path):
     print("Please provide a valid image path")
     exit()
 
-if img_path.split('.')[-1] in ['pdf']:
+if img_path.split(".")[-1] in ["pdf"]:
     is_pdf = True
     doc = fitz.open(img_path)  # open document
     for i, page in enumerate(doc):
         pix = page.get_pixmap()  # render page to an image
         pix.save(f"pdfpics/page_{i+1}.png")
 
-elif img_path.split('.')[-1] not in ['jpeg', 'jpg', 'png']:
+elif img_path.split(".")[-1] not in ["jpeg", "jpg", "png"]:
     print("That wasnt an image")
     exit()
 
@@ -29,26 +27,31 @@ elif img_path.split('.')[-1] not in ['jpeg', 'jpg', 'png']:
 user_choice = input("Enter 'gpt' for GPT-4o or 'gemini' for Gemini AI: ")
 
 
-if user_choice == 'gpt':
+if user_choice == "gpt":
     from gptAI import generate_text_from_image_gpt
 
-    if (is_pdf == False):
+    if not is_pdf:
         generated_text = generate_text_from_image_gpt(text_prompt, img_path)
         print(generated_text)
-    else:
+    else: #I think GPT can do PDFs too
         for i in range(1, len(os.listdir("pdfpics"))):
-            generated_text = generate_text_from_image_gpt(text_prompt, f"pdfpics/page_{i}.png")
+            generated_text = generate_text_from_image_gpt(
+                text_prompt, f"pdfpics/page_{i}.png"
+            )
             print(generated_text)
 
-elif user_choice == 'gemini':
+elif user_choice == "gemini":
     from geminiAI import generate_text_from_image_gemini
+    text_prompt = "Extract all text in this file. Translate the text into the English language from whatever language it is in. Make sure to use only ascii characters. Convert all existing dates in the translated text into the dd/mm/yyyy format, do not create dates if the date is blank. Format the translated text into a JSON format, making sure to use the dates in the dd/mm/yyy format. Refrain from doing anything else, under any circumstances do not produce or populate data that is not in the given file."
 
-    if (is_pdf == False):
+    if not is_pdf:
         response = generate_text_from_image_gemini(text_prompt, img_path)
         print(response.text)
     else:
         for i in range(1, len(os.listdir("pdfpics"))):
-            response = generate_text_from_image_gemini(text_prompt, f"pdfpics/page_{i}.png")
+            response = generate_text_from_image_gemini(
+                text_prompt, f"pdfpics/page_{i}.png"
+            )
             print(response.text)
 
 else:

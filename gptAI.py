@@ -5,7 +5,7 @@ import constants
 
 
 def generate_text_from_image_gpt(text_prompt, img_path):
-    client = OpenAI(constants.openai_api_key)
+    client = OpenAI(api_key=constants.openai_api_key)
     with open(img_path, 'rb') as image_file:
         image_data = image_file.read()
 
