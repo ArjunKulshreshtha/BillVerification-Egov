@@ -2,8 +2,10 @@ import os
 import fitz
 
 
-img_path = "imgs/longtest.pdf"
-text_prompt = "Extract all text in this file and output it in JSON format. Convert any dates in the file to dd/mm/yyyy format before entering it into the JSON format. Use only ASCII characters. Translate all text to English before putting in JSON format."
+img_path = "imgs/shopBill.jpg"
+# text_prompt = "Extract all text in this file and output it in JSON format. Convert any dates in the file to dd/mm/yyyy format before entering it into the JSON format. Use only ASCII characters. Translate all text to English before putting in JSON format."
+text_prompt = "Extract all text in this file. Translate the text into the English language from whatever language it is in. Make sure to use only ascii characters. Convert all existing dates in the translated text into the dd/mm/yyyy format, do not create dates if the date is blank. Format the translated text into a JSON format, making sure to use the dates in the dd/mm/yyy format. Refrain from doing anything else, under any circumstances do not produce or populate data that is not in the given file."
+
 
 is_pdf = False
 
@@ -25,6 +27,7 @@ elif img_path.split(".")[-1] not in ["jpeg", "jpg", "png"]:
 
 # Let user choose between GPT-4o and Gemini AI
 user_choice = input("Enter 'gpt' for GPT-4o or 'gemini' for Gemini AI: ")
+# user_choice = "gemini"
 
 
 if user_choice == "gpt":
@@ -42,7 +45,7 @@ if user_choice == "gpt":
 
 elif user_choice == "gemini":
     from geminiAI import generate_text_from_image_gemini
-    text_prompt = "Extract all text in this file. Translate the text into the English language from whatever language it is in. Make sure to use only ascii characters. Convert all existing dates in the translated text into the dd/mm/yyyy format, do not create dates if the date is blank. Format the translated text into a JSON format, making sure to use the dates in the dd/mm/yyy format. Refrain from doing anything else, under any circumstances do not produce or populate data that is not in the given file."
+    # text_prompt = "Extract all text and translate it to english, output the english translation"
 
     if not is_pdf:
         response = generate_text_from_image_gemini(text_prompt, img_path)
