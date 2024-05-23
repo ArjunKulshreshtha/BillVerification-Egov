@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Verification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #333;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        input, select {
+            margin-bottom: 15px;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #result {
+            margin-top: 20px;
+        }
+        #result h2 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        #result p {
+            font-size: 16px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Document Verification</h1>
+        <form id="verificationForm">
+            <label for="fieldName">Field Name:</label>
+            <input type="text" id="fieldName" name="field_name" required>
+
+            <label for="fieldValue">Field Value:</label>
+            <input type="text" id="fieldValue" name="field_value" required>
+
+            <label for="docPath">Document Path:</label>
+            <input type="text" id="docPath" name="doc_path" required>
+
+            <label for="userChoice">AI Model:</label>
+            <select id="userChoice" name="user_choice" required>
+                <option value="gpt">GPT-4</option>
+                <option value="gemini">Gemini AI</option>
+            </select>
+
+            <button type="submit">Submit</button>
+        </form>
+
+        <div id="result"></div>
+    </div>
+
+    <script>
+        document.getElementById('verificationForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const fieldName = document.getElementById('fieldName').value;
+            const fieldValue = document.getElementById('fieldValue').value;
+            const docPath = document.getElementById('docPath').value;
+            const userChoice = document.getElementById('userChoice').value;
+
+            const data = {
+                field_name: fieldName,
+                field_value: fieldValue,
+                doc_path: docPath,
+                user_choice: userChoice
+            };
+
+            fetch('http://127.0.0.1:5000/verify_document', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                const resultDiv = document.getElementById('result');
+                resultDiv.innerHTML = `
+                    <h2>Verification Result</h2>
+                    <p><strong>Extracted Values:</strong> ${data.extracted_values}</p>
+                    <p><strong>Verification Result:</strong> ${data.verification_result}</p>
+                `;
+            })
+            .catch(error => {
+                const resultDiv = document.getElementById('result');
+                resultDiv.innerHTML = `
+                    <h2>Error</h2>
+                    <p>${error}</p>
+                `;
+            });
+        });
+    </script>
+</body>
+</html>
