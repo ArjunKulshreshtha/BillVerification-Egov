@@ -1,7 +1,6 @@
-#TODO: Implement doc_path validity checking and the PDF to image conversion from main_old.py
-
 import geminiAI
 import gptAI
+
 import os
 import fitz
 
