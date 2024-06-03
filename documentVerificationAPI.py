@@ -59,7 +59,7 @@ def verify_document():
                 responses.append(response)
 
     # Verify text match
-    text_prompt = f"Do '{responses[-1]}' and '{field_value}' match? Provide a confidence score (out of 100) as well, ensure that a confidence score of 100 is not given unless there is a perfect match"
+    text_prompt = f"Are '{responses[-1]}' and '{field_value}' the same? Provide a confidence score (out of 100) as well, ensure that a confidence score of 100 is not given unless there is a perfect match. Format the answer as a Yes/No: 'Yes, 95' or 'No, 50'"
 
     if user_choice == "gpt":
         final_response = gptAI.generate_text_from_text_gpt(text_prompt)
