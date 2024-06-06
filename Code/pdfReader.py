@@ -1,4 +1,5 @@
 import os
+import time
 import fitz
 
 def pdf_to_images(pdf_path):
@@ -7,8 +8,8 @@ def pdf_to_images(pdf_path):
 
     # Create a directory to save the images
     output_dir = os.path.dirname(pdf_path)
-    output_dir = os.path.join(output_dir, 'pdf_images')
-    os.makedirs(output_dir, exist_ok=True)
+    # output_dir = os.path.join(output_dir, 'pdf_images')
+    # os.makedirs(output_dir, exist_ok=True)
 
     # Iterate over each page in the PDF
     for i in range(len(doc)):
@@ -17,7 +18,7 @@ def pdf_to_images(pdf_path):
         pix = page.get_pixmap()
 
         # Save the image to the output directory
-        image_path = os.path.join(output_dir, f'page_{i+1}.jpg')
+        image_path = os.path.join(output_dir, f'{time.time}_page_{i+1}.jpg')
         pix.save(image_path, 'JPEG')
 
     print(f'PDF converted to images. Saved to: {output_dir}')
