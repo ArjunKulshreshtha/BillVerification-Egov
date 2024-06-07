@@ -70,4 +70,6 @@ def compare_json_files_and_log(file_path, json_path1, json_path2):
     log_to_excel(file_path, json_path1, json_path2, match_score, match)
 
 # Example usage:
-compare_json_files_and_log('comparison_log.xlsx', 'sample.json', 'sample2.json')
+
+if __name__ == '__main__':
+    compare_json_files_and_log('comparison_log.xlsx', 'sample.json', 'sample2.json')

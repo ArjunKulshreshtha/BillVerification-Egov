@@ -7,7 +7,7 @@ def pdf_to_images(pdf_path):
     doc = fitz.open(pdf_path)
 
     # Create a directory to save the images
-    output_dir = os.path.dirname(pdf_path)
+    output_dir = os.path.join(os.path.dirname(pdf_path), 'imgs')
     # output_dir = os.path.join(output_dir, 'pdf_images')
     # os.makedirs(output_dir, exist_ok=True)
 
@@ -18,11 +18,13 @@ def pdf_to_images(pdf_path):
         pix = page.get_pixmap()
 
         # Save the image to the output directory
-        image_path = os.path.join(output_dir, f'{time.time}_page_{i+1}.jpg')
+        image_path = os.path.join(output_dir, f'{time.time()}_page_{i+1}.jpg')
         pix.save(image_path, 'JPEG')
 
     print(f'PDF converted to images. Saved to: {output_dir}')
 
-# Example usage
-pdf_path = '/path/to/your/pdf.pdf'
-pdf_to_images(pdf_path)
+
+if __name__ == '__main__':
+    # Example usage
+    pdf_path = '/path/to/your/pdf.pdf'
+    pdf_to_images(pdf_path)

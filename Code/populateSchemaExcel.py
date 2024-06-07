@@ -8,13 +8,13 @@ import json
 from datetime import datetime
 
 def convert_datetime_to_string(obj):
-    """Recursively convert datetime objects to strings in the dictionary."""
+    """Recursively convert datetime objects to strings (date only) in the dictionary."""
     if isinstance(obj, dict):
         return {k: convert_datetime_to_string(v) for k, v in obj.items()}
     elif isinstance(obj, list):
         return [convert_datetime_to_string(item) for item in obj]
     elif isinstance(obj, datetime):
-        return obj.strftime('%Y-%m-%d %H:%M:%S')
+        return obj.strftime('%Y-%m-%d')
     else:
         return obj
 
