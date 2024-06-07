@@ -59,8 +59,10 @@ def populateSchemaFromExcel(excel_file_path, input_json_path):
     with open(json_output_path, 'w') as json_file:
         json.dump(data, json_file, indent=4)
 
-# Example usage
-excel_file_path = './Dataset_Filtered/Data1/Feb and March month Reimbursement bill.xlsx'
-input_json_path = './Schema/sample.json'
 
-populateSchemaFromExcel(excel_file_path, input_json_path)
+if __name__ == '__main__':
+    # Example usage
+    excel_file_path = './Dataset_Filtered/Data1/Feb and March month Reimbursement bill.xlsx'
+    input_json_path = './Schema/sample.json'
+
+    populateSchemaFromExcel(excel_file_path, input_json_path)
