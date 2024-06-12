@@ -1,0 +1,72 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Billing Form</title>
+</head>
+<body>
+    <form id="billingForm">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name"><br><br>
+
+        <label for="consumerNumber">Consumer Number:</label>
+        <input type="text" id="consumerNumber" name="consumerNumber"><br><br>
+
+        <label for="billingUnit">Billing Unit:</label>
+        <input type="text" id="billingUnit" name="billingUnit"><br><br>
+
+        <label for="pc">PC:</label>
+        <input type="text" id="pc" name="pc"><br><br>
+
+        <h4>Consumption:</h4>
+        
+        <label for="billMonth">Bill Month:</label>
+        <input type="text" id="billMonth" name="billMonth"><br><br>
+
+        <label for="billDate">Bill Date:</label>
+        <input type="date" id="billDate" name="billDate"><br><br>
+
+        <label for="billAmount">Bill Amount:</label>
+        <input type="number" id="billAmount" name="billAmount"><br><br>
+
+        <label for="billDueDate">Bill Due Date:</label>
+        <input type="date" id="billDueDate" name="billDueDate"><br><br>
+
+        <label for="billAmountAfterDueDate">Bill Amount After Due Date:</label>
+        <input type="number" id="billAmountAfterDueDate" name="billAmountAfterDueDate"><br><br>
+
+        <label for="promptPaymentDate">Prompt Payment Date:</label>
+        <input type="date" id="promptPaymentDate" name="promptPaymentDate"><br><br>
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <script>
+        document.getElementById('billingForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the default form submission
+            
+            const formData = new FormData(event.target);
+            const data = {};
+            formData.forEach((value, key) => {
+                data[key] = value;
+            });
+
+            fetch('https://example.com/api/submit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>
+

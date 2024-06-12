@@ -35,7 +35,7 @@ def process_image_with_gptAI(json_file, image_file):
 
 # Example usage
 json_file = "parameters.json"
-image_file = "imgs/formTest3.jpg"
+image_file = "imgs/shopBill.jpg"
 
 
 # Let user choose between GPT-4o and Gemini AI

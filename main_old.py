@@ -2,10 +2,10 @@ import os
 import fitz
 
 
-img_path = "imgs/shopBill.jpg"
+img_path = "imgs/elecbill.jpeg"
 # text_prompt = "Extract all text in this file and output it in JSON format. Convert any dates in the file to dd/mm/yyyy format before entering it into the JSON format. Use only ASCII characters. Translate all text to English before putting in JSON format."
-text_prompt = "Extract all text in this file. Translate the text into the English language from whatever language it is in. Make sure to use only ascii characters. Convert all existing dates in the translated text into the dd/mm/yyyy format, do not create dates if the date is blank. Format the translated text into a JSON format, making sure to use the dates in the dd/mm/yyy format. Refrain from doing anything else, under any circumstances do not produce or populate data that is not in the given file."
-
+# text_prompt = "Extract all text in this file. Translate the text into the English language from whatever language it is in. Make sure to use only ascii characters. Convert all existing dates in the translated text into the dd/mm/yyyy format, do not create dates if the date is blank. Format the translated text into a JSON format, making sure to use the dates in the dd/mm/yyy format. Refrain from doing anything else, under any circumstances do not produce or populate data that is not in the given file."
+text_prompt = "Extract all text and translate the extracted text to English, output the English translation, ensuring that no information is lost or added."
 
 is_pdf = False
 
@@ -49,13 +49,13 @@ elif user_choice == "gemini":
 
     if not is_pdf:
         response = generate_text_from_image_gemini(text_prompt, img_path)
-        print(response.text)
+        print(response)
     else:
         for i in range(1, len(os.listdir("pdfpics"))):
             response = generate_text_from_image_gemini(
                 text_prompt, f"pdfpics/page_{i}.png"
             )
-            print(response.text)
+            print(response)
 
 else:
     print("Invalid choice. Please enter 'gpt' or 'gemini'")

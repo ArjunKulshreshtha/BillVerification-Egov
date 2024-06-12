@@ -1,0 +1,36 @@
+{
+    "Purchase Date": "",
+    "Delivery Date": "",
+    "Item List": "",
+    "Total Price per Item": "",
+    "Subtotal": "",
+    "Tax Amount": "",
+    "Discount": "",
+    "Subtotal After Discount": "",
+    "Total_Amount_Due": "",
+    "Subtotal_After_Discount": "",
+    "Tax_Amount": "",
+    "Customer_Information": "",
+    "Payment_Information": "",
+    "Purchase_Date": "",
+    "Delivery_Date": "",
+    "Item_List": {
+        "name": "",
+        "quantity": "",
+        "unit_price": "",
+        "total_price": ""
+    },
+    "Total_Price_per_Item_Shirt": "",
+    "Total_Price_per_Item_Pants": "",
+    "Tax Rate": "",
+    "Total Amount Due": "",
+    "Customer Information": {
+        "name": "",
+        "address": "",
+        "contact": ""
+    },
+    "Payment Information": {
+        "payment_method": "",
+        "payment_reference": ""
+    }
+}

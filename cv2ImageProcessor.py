@@ -13,7 +13,7 @@ import numpy as np
 # IMAGE_RESOLUTION = (1920,1080)
 # IMAGE_ROTATION_DEGS = 0
 
-BW_THRESH = 100 # 70
+BW_THRESH = 160 # 70
 
 # Function to create a plain white image of the same dimensions as the input image
 def create_white_image(input_image_path, output_image_path):
@@ -43,34 +43,39 @@ def debug_save_img(img, imgname):
     im.save(imgname)
 
 
-img_path = 'imgs/formtest.jpg'
+img_path = 'imgs/handwriting.jpg'
 img_raw = cv2.imread(img_path)
 # Create a white image with the same dimensions as the input image
 create_white_image(img_path, 'imgs/WhiteOffset.jpg')
 white_offset_img = cv2.imread('imgs\whiteOffset.jpg', cv2.IMREAD_GRAYSCALE)
-# img_greyscale = cv2.cvtColor(img_raw,cv2.COLOR_BGR2GRAY)
-# img_gs_blur = cv2.GaussianBlur(img_greyscale,(5,5),0)
-# # img_gs_blur_crop = img_gs_blur[H_MIN:H_MAX, W_MIN:W_MAX]
-
-# debug_save_img(img_gs_blur, 'uploads\shopBillCropped.jpg')
 
 
 
 
 gray = cv2.cvtColor(img_raw,cv2.COLOR_BGR2GRAY)
 blur = cv2.GaussianBlur(gray,(5,5),0)
-# blur_crop = blur[cfg.H_MIN:cfg.H_MAX, cfg.W_MIN:cfg.W_MAX]
-    # Subtract from background white cal image before thresholding
-blur_crop = white_offset_img - blur
+
+kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3,3))
+morph = cv2.morphologyEx(gray, cv2.MORPH_OPEN, kernel)
+
+blur_crop = white_offset_img - morph
 blur_crop[blur_crop > 200] = 0
+
+
+
+
 debug_save_img(blur_crop, 'uploads/offset_greyscale.jpg')
-debug_save_img(blur, 'uploads/greyscale.jpg')
+debug_save_img(morph, 'uploads/greyscale.jpg')
     
 # if exp_threshold is None:
 exp_threshold = BW_THRESH
 _, proc_img = cv2.threshold(blur_crop, exp_threshold, 255, cv2.THRESH_BINARY)
 
-# proc_img = cv2.bitwise_not(processed_image)
+# proc_img = cv2.bitwise_not(proc_img)
+# proc_img = cv2.morphologyEx(proc_img, cv2.MORPH_DILATE, kernel)
+proc_img = cv2.morphologyEx(proc_img, cv2.MORPH_DILATE, kernel)
+proc_img = cv2.bitwise_not(proc_img)
+
 
 # if cfg.DEBUG_MODE:
 debug_save_img(proc_img, 'uploads/thresholded.jpg')
