@@ -2,9 +2,11 @@ import google.generativeai as genai
 import PIL.Image
 import os
 import constants
+import time
 
 
 def generate_text_from_image_gemini(text_prompt, img_path):
+    time.sleep(2)
     os.environ["GOOGLE_API_CREDENTIALS"] = constants.gemini_api_key
     genai.configure(api_key=os.environ.get("GOOGLE_API_CREDENTIALS"))
     img = PIL.Image.open(img_path)
@@ -65,4 +67,4 @@ if __name__ == '__main__':
 
 '''
     image_path = ".\Dataset_Filtered\Data1\Bills\imgs\IMG20240309112430.jpg"
-    print(extract_json(generate_text_from_image_gemini(text_prompt, image_path)))
+    # print(extract_json(generate_text_from_image_gemini(text_prompt, image_path)))

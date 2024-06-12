@@ -19,11 +19,12 @@ def convert_datetime_to_string(obj):
         return obj
 
 def populateSchemaFromExcel(excel_file_path, input_json_path):
+    print(excel_file_path)
 
     # Load the input JSON file to get the keys
     with open(input_json_path, 'r') as json_file:
         input_json = json.load(json_file)
-    required_keys = set(input_json.keys())
+    required_keys = set(input_json[0].keys())
 
     # Print the keys of the input JSON
     print("Keys from the input JSON file:")

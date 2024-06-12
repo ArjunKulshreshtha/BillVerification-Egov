@@ -1,3 +1,4 @@
+import time
 import constants
 import base64
 import requests
@@ -45,10 +46,47 @@ def generate_text_from_image_gpt(text_prompt, image_path):
     "max_tokens": 600
     }
 
-    response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload)
-    print(response.json())
-    return (response.json().get("choices")[0]["message"]["content"])
+    time.sleep(2)
 
+    response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload)
+    print(response)
+    print(response.json().get("choices")[0]["message"]["content"])
+    try:
+        return (response.json().get("choices")[0]["message"]["content"])
+    except:
+        return "{}"
+
+
+
+def generate_text_from_text_gpt(text_prompt):
+    # OpenAI API Key
+    api_key = constants.openai_api_key
+
+    headers = {
+    "Content-Type": "application/json",
+    "Authorization": f"Bearer {api_key}"
+    }
+
+    payload = {
+    "model": "gpt-4",
+    "messages": [
+        {
+        "role": "user",
+        "content": [
+            {
+            "type": "text",
+            "text": text_prompt
+            }
+        ]
+        }
+    ],
+    "max_tokens": 500
+    }
+
+    response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload)
+    print(response)
+    print(response.json().get("choices")[0]["message"]["content"])
+    return (response.json().get("choices")[0]["message"]["content"])
 
 
 if __name__ == '__main__':
@@ -88,5 +126,8 @@ if __name__ == '__main__':
   }```
 
 '''
-    image_path = ".\Dataset_Filtered\Data1\Bills\imgs\IMG20240309112430.jpg"
-    print(generate_text_from_image_gpt(text_prompt, image_path))
+    image_path = "./elecbill.jpeg"
+
+
+    generate_text_from_image_gpt(text_prompt, image_path)
+    # print(generate_text_from_image_gpt(text_prompt, image_path))

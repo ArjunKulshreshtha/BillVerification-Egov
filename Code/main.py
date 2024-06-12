@@ -51,6 +51,7 @@ text_prompt = '''
 
 def list_dirs(directory_path):
     """List all files in the specified directory."""
+    global dirs
     try:
         # Iterate over all the files in the directory
         for filename in os.listdir(directory_path):
@@ -121,7 +122,7 @@ def save_dict_to_json_file(string_data, output_file_path):
     """
     try:
         # Convert string to JSON object
-        new_data = json.loads(string_data)
+        new_data = json.loads(extract_json(string_data))
         
         # Read existing data from the file, if it exists
         try:
@@ -154,11 +155,8 @@ list_dirs(directory_path)
 
 
 
-
-# Loop through all directories
 for directory in dirs:
-
-
+    print(f"Processing directory: {directory}")
     # Populating json from excel
     data_source = list_excel_files(directory)
     if data_source:
@@ -183,7 +181,9 @@ for directory in dirs:
             pdfReader.pdf_to_images(pdf_path)
 
     # Loop through every image in the imgs sub-directory
-    for filename in os.listdir(os.path.join(bill_path, 'imgs')):
+    subdirs = os.listdir(os.path.join(bill_path, 'imgs'))
+    for filename in subdirs:
+        print(f"Processing image: {filename}")
         if filename.endswith('.jpg') or filename.endswith('.jpeg') or filename.endswith('.png'):
             image_path = os.path.join(bill_path, 'imgs', filename)
             
@@ -191,38 +191,49 @@ for directory in dirs:
             #? Run test cases
 
             # Test Case 1: Gpt-4o with unfiltered image
+            print("Running test case 1")
             save_dict_to_json_file(gpt4o.generate_text_from_image_gpt(text_prompt, image_path), os.path.join(directory, 'output_gpt_raw.json'))
 
             # # Test Case 2: Gemini with unfiltered image
+            print("Running test case 2")
             save_dict_to_json_file(gemini.generate_text_from_image_gemini(text_prompt, image_path), os.path.join(directory, 'output_gemini_raw.json'))
 
             # # Test Case 3: Gpt-4o with grayscale image
-            save_dict_to_json_file(gpt4o.generate_text_from_image_gpt(text_prompt, cv2filters.convert_to_grayscale(image_path)), os.path.join(directory, 'output_gpt_grayscale.json'))
+            print("Running test case 3")
+            grayscale_image_path = cv2filters.convert_to_grayscale(image_path)
+            save_dict_to_json_file(gpt4o.generate_text_from_image_gpt(text_prompt, grayscale_image_path), os.path.join(directory, 'output_gpt_grayscale.json'))
 
             # # Test Case 4: Gemini with grayscale image
-            save_dict_to_json_file(gemini.generate_text_from_image_gemini(text_prompt, cv2filters.convert_to_grayscale(image_path)), os.path.join(directory, 'output_gemini_grayscale.json'))
+            print("Running test case 4")
+            save_dict_to_json_file(gemini.generate_text_from_image_gemini(text_prompt, grayscale_image_path), os.path.join(directory, 'output_gemini_grayscale.json'))
 
-            # # Test Case 5: Gpt-4o with binary image            
-            save_dict_to_json_file(gpt4o.generate_text_from_image_gpt(text_prompt, cv2filters.apply_threshold(image_path, 160)), os.path.join(directory, 'output_gpt_binary.json'))
+            # # Test Case 5: Gpt-4o with binary image   
+            print("Running test case 5")         
+            binary_image_path = cv2filters.apply_threshold(grayscale_image_path, 160)
+            save_dict_to_json_file(gpt4o.generate_text_from_image_gpt(text_prompt, binary_image_path), os.path.join(directory, 'output_gpt_binary.json'))
 
             # # Test Case 6: Gemini with binary image
-            save_dict_to_json_file(gemini.generate_text_from_image_gemini(text_prompt, cv2filters.apply_threshold(image_path, 160)), os.path.join(directory, 'output_gemini_binary.json'))
+            print("Running test case 6")
+            save_dict_to_json_file(gemini.generate_text_from_image_gemini(text_prompt, binary_image_path), os.path.join(directory, 'output_gemini_binary.json'))
 
             # # Test Case 7: Gpt-4o with processed image
-            save_dict_to_json_file(gpt4o.generate_text_from_image_gpt(text_prompt, cv2filters.process_image(image_path)), os.path.join(directory, 'output_gpt_processed.json'))
+            print("Running test case 7")
+            processed_image_path = cv2filters.process_image(binary_image_path)
+            save_dict_to_json_file(gpt4o.generate_text_from_image_gpt(text_prompt, processed_image_path), os.path.join(directory, 'output_gpt_processed.json'))
 
             # # Test Case 8: Gemini with processed image
-            save_dict_to_json_file(gemini.generate_text_from_image_gemini(text_prompt, cv2filters.process_image(image_path)), os.path.join(directory, 'output_gemini_processed.json'))
+            print("Running test case 8")
+            save_dict_to_json_file(gemini.generate_text_from_image_gemini(text_prompt, processed_image_path), os.path.join(directory, 'output_gemini_processed.json'))
 
     # Log data
-    logData.compare_json_files_and_log("./output_data/comparison_log_gpt_raw.xlsx", os.path.join(directory, 'output_gpt_raw.json'), os.path.join(directory, 'data_filtered.json'))
-    logData.compare_json_files_and_log("./output_data/comparison_log_gemini_raw.xlsx", os.path.join(directory, 'output_gemini_raw.json'), os.path.join(directory, 'data_filtered.json'))
-    logData.compare_json_files_and_log("./output_data/comparison_log_gpt_grayscale.xlsx", os.path.join(directory, 'output_gpt_grayscale.json'), os.path.join(directory, 'data_filtered.json'))
-    logData.compare_json_files_and_log("./output_data/comparison_log_gemini_grayscale.xlsx", os.path.join(directory, 'output_gemini_grayscale.json'), os.path.join(directory, 'data_filtered.json'))
-    logData.compare_json_files_and_log("./output_data/comparison_log_gpt_binary.xlsx", os.path.join(directory, 'output_gpt_binary.json'), os.path.join(directory, 'data_filtered.json'))
-    logData.compare_json_files_and_log("./output_data/comparison_log_gemini_binary.xlsx", os.path.join(directory, 'output_gemini_binary.json'), os.path.join(directory, 'data_filtered.json'))
-    logData.compare_json_files_and_log("./output_data/comparison_log_gpt_processed.xlsx", os.path.join(directory, 'output_gpt_processed.json'), os.path.join(directory, 'data_filtered.json'))
-    logData.compare_json_files_and_log("./output_data/comparison_log_gemini_processed.xlsx", os.path.join(directory, 'output_gemini_processed.json'), os.path.join(directory, 'data_filtered.json'))
+    logData.compare_json_files_and_log(os.path.join(directory ,"output_data/comparison_log_gpt_raw.xlsx"), os.path.join(directory, 'output_gpt_raw.json'), os.path.join(directory, 'data_filtered.json'))
+    logData.compare_json_files_and_log(os.path.join(directory ,"./output_data/comparison_log_gemini_raw.xlsx"), os.path.join(directory, 'output_gemini_raw.json'), os.path.join(directory, 'data_filtered.json'))
+    logData.compare_json_files_and_log(os.path.join(directory ,"./output_data/comparison_log_gpt_grayscale.xlsx"), os.path.join(directory, 'output_gpt_grayscale.json'), os.path.join(directory, 'data_filtered.json'))
+    logData.compare_json_files_and_log(os.path.join(directory ,"./output_data/comparison_log_gemini_grayscale.xlsx"), os.path.join(directory, 'output_gemini_grayscale.json'), os.path.join(directory, 'data_filtered.json'))
+    logData.compare_json_files_and_log(os.path.join(directory ,"./output_data/comparison_log_gpt_binary.xlsx"), os.path.join(directory, 'output_gpt_binary.json'), os.path.join(directory, 'data_filtered.json'))
+    logData.compare_json_files_and_log(os.path.join(directory ,"./output_data/comparison_log_gemini_binary.xlsx"), os.path.join(directory, 'output_gemini_binary.json'), os.path.join(directory, 'data_filtered.json'))
+    logData.compare_json_files_and_log(os.path.join(directory ,"./output_data/comparison_log_gpt_processed.xlsx"), os.path.join(directory, 'output_gpt_processed.json'), os.path.join(directory, 'data_filtered.json'))
+    logData.compare_json_files_and_log(os.path.join(directory ,"./output_data/comparison_log_gemini_processed.xlsx"), os.path.join(directory, 'output_gemini_processed.json'), os.path.join(directory, 'data_filtered.json'))
 
 
     print("\n--------------------------------\n")
